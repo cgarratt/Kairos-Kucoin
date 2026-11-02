@@ -4,4 +4,4 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 COPY market_data.py history_data.py technical.py server.py ./
 EXPOSE 10000
-CMD ["python","server.py"]
+CMD ["python", "server.py"]
