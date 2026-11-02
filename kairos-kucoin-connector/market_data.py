@@ -1,4 +1,4 @@
-"""Public KuCoin Spot quotes only. No account keys, orders, or background jobs."""
+"""Public KuCoin Spot quotes (history is implemented separately). No account keys, orders, or background jobs."""
 import copy
 import datetime as dt
 import email.utils
