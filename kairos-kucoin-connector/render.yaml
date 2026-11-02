@@ -1,0 +1,5 @@
+services:
+  - type: web
+    name: kairos-kucoin
+    runtime: docker
+    plan: free
