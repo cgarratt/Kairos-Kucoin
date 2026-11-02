@@ -1,0 +1,19 @@
+{
+  "component": "MCP_KuCoin",
+  "version": "1.1.0",
+  "release_suite": "2026.11.02.7",
+  "compatible_versions": {
+    "KairosWeb": "3.0.39",
+    "KairosGPT": "1.3.18",
+    "MCP_KuCoin": "1.1.0",
+    "MCP_Binance": "5.4.1",
+    "MCP_Hyperliquid": "1.0.1",
+    "MASTER_schema": "5.0.0"
+  },
+  "read_only": true,
+  "remote_deployment_verified": false,
+  "upstream_live_verified": false,
+  "tools": 4,
+  "market_role": "PRIMARY",
+  "historical_cache": "SQLITE_INCREMENTAL_DAILY_UTC"
+}
