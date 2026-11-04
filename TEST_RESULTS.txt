@@ -1,0 +1,34 @@
+/root/.local/lib/python3.12/site-packages/fastmcp/server/auth/providers/jwt.py:10: AuthlibDeprecationWarning: authlib.jose module is deprecated, please use joserfc instead.
+It will be compatible before version 2.0.0.
+  from authlib.jose import JsonWebKey, JsonWebToken
+/root/.local/lib/python3.12/site-packages/authlib/integrations/httpx_client/assertion_client.py:5: AuthlibDeprecationWarning: The httpx module is deprecated; please use httpx2 instead.
+  from ._compat import httpx2
+test_bad_inputs_do_not_fetch (test_history_data.History.test_bad_inputs_do_not_fetch) ... ok
+test_cache_reused_after_process_cache_reset (test_history_data.History.test_cache_reused_after_process_cache_reset) ... ok
+test_duplicate_and_invalid_ohlc_rejected (test_history_data.History.test_duplicate_and_invalid_ohlc_rejected) ... ok
+test_gap_or_missing_last_bar_rejects_without_publishing_coverage (test_history_data.History.test_gap_or_missing_last_bar_rejects_without_publishing_coverage) ... ok
+test_initial_cache_and_incremental_next_day (test_history_data.History.test_initial_cache_and_incremental_next_day) ... ok
+test_larger_window_fetches_older_data (test_history_data.History.test_larger_window_fetches_older_data) ... ok
+test_parse_closed_sorted_ohlcv_and_quote_volume (test_history_data.History.test_parse_closed_sorted_ohlcv_and_quote_volume) ... ok
+test_rate_limit_shared_guard_no_second_request (test_history_data.History.test_rate_limit_shared_guard_no_second_request) ... ok
+test_short_leading_listing_history_is_explicit (test_history_data.History.test_short_leading_listing_history_is_explicit) ... ok
+test_snapshot_complete_source_and_indicators_no_spot_request (test_history_data.History.test_snapshot_complete_source_and_indicators_no_spot_request) ... ok
+test_snapshot_failure_returns_no_partial_history (test_history_data.History.test_snapshot_failure_returns_no_partial_history) ... ok
+test_duplicate_rejected (test_market_data.QuotesTests.test_duplicate_rejected) ... ok
+test_http200_api_rate_limit_is_not_cached_as_prices (test_market_data.QuotesTests.test_http200_api_rate_limit_is_not_cached_as_prices) ... ok
+test_invalid_symbols_no_request (test_market_data.QuotesTests.test_invalid_symbols_no_request) ... ok
+test_missing_pair_rejects_complete_valuation (test_market_data.QuotesTests.test_missing_pair_rejects_complete_valuation) ... ok
+test_nonfinite_zero_negative_and_crossed_rejected (test_market_data.QuotesTests.test_nonfinite_zero_negative_and_crossed_rejected) ... ok
+test_rate_pause_persists_without_new_network (test_market_data.QuotesTests.test_rate_pause_persists_without_new_network) ... ok
+test_reset_header_milliseconds (test_market_data.QuotesTests.test_reset_header_milliseconds) ... ok
+test_single_request_all_tokens_and_cache_timestamp_preserved (test_market_data.QuotesTests.test_single_request_all_tokens_and_cache_timestamp_preserved) ... ok
+test_stale_and_future_times_rejected (test_market_data.QuotesTests.test_stale_and_future_times_rejected) ... ok
+test_timeout_and_malformed_json_fail_closed (test_market_data.QuotesTests.test_timeout_and_malformed_json_fail_closed) ... ok
+test_exactly_four_tools_and_history_schemas (test_tool_discovery.Discovery.test_exactly_four_tools_and_history_schemas) ... ok
+test_service_identity_and_historical_dispatch (test_tool_discovery.Discovery.test_service_identity_and_historical_dispatch) ... ok
+test_exact_docker_copy_context_imports_all_four (test_tool_discovery.Packaging.test_exact_docker_copy_context_imports_all_four) ... ok
+
+----------------------------------------------------------------------
+Ran 24 tests in 1.976s
+
+OK

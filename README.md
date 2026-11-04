@@ -1,26 +1,75 @@
-# Kairos KuCoin MCP 1.1.0
+# Kairos KuCoin MCP 1.1.1
 
-Datos públicos Spot e históricos diarios; sin claves de cuenta, órdenes, saldos ni procesos programados.
+Release de código: cuatro herramientas MCP registradas y Docker corregido.
+Solo datos públicos; no claves de exchange, saldos privados, órdenes o transferencias.
+
+## Corrección
+
+El ZIP 1.1.0 registra cuatro herramientas, pero su Dockerfile solo copiaba server.py
+ y market_data.py: faltaban history_data.py y technical.py. En una construcción
+limpia ese paquete no podía importar el servidor histórico correctamente.
+Este release copia los cuatro módulos necesarios y añade pruebas de descubrimiento
+MCP con FastMCP 2.14.7. Service info devuelve versión 1.1.1 y catálogo esperado.
+El catálogo esperado es diagnóstico: la prueba real es tools/list.
+
+No se ha identificado qué código está ejecutándose en el servicio actual ni si
+ChatGPT conserva un catálogo anterior. La corrección del ZIP no demuestra por sí
+sola la causa de que solo aparezcan dos herramientas en la conexión existente.
 
 ## Actualizar el servicio existente
 
-Reemplazar el contenido del repositorio por la carpeta kairos-kucoin-connector descomprimida. Mantener la Root Directory de Render coherente con la ubicación de Dockerfile. Conservar el endpoint HTTPS /mcp, variables y configuración existentes. No crear otro servicio. Docker ejecuta python server.py, PORT de Render o10000.
+1. Descomprimir y reemplazar los archivos del repositorio MCP por el contenido
+   de kairos-kucoin-connector. No subir el ZIP como único archivo del repositorio.
+2. Mantener Root Directory apuntando a la carpeta del Dockerfile y conservar URL,
+   variables y servicio actuales. No modificar el repositorio ni servicio KairosWeb.
+3. Desplegar el commit nuevo en el servicio KuCoin de Render. Si aparece un build
+   antiguo, utilizar un nuevo build sin caché desde el panel disponible.
+4. Ejecutar el verificador del catálogo remoto:
 
-## Herramientas
+```bash
+python -m pip install -r requirements.txt
+python verify_tools.py https://TU-SERVICIO.onrender.com/mcp
+```
 
-- get_kairos_kucoin_service_info: versión 1.1.0 y alcance, sin consultar exchange.
-- get_kairos_kucoin_spot_prices:12 pares USDT, caché 60s, observación original, precios positivos y cobertura completa.
-- get_kairos_kucoin_ohlcv(symbol=BTCUSDT,interval=1d,limit=999): velas cerradas UTC; límite1..1500. Ventana999d por defecto. No devuelve velas1W del proveedor: semanas se construyen desde los días en consumidores.
-- get_kairos_kucoin_history_snapshot:12 series diarias completas disponibles y sus indicadores. No consulta Spot. Un fallo de cualquier token devuelve DATA_ERROR sin publicar un conjunto histórico parcial, identificando failed_symbol.
+Debe devolver status OK, versión 1.1.1 y exactamente cuatro herramientas. No consulta
+precios ni históricos upstream. Si no coincide, revisar commit, Root Directory,
+Dockerfile y URL efectiva. No repetir llamadas durante pausas de un proveedor.
+5. Actualizar la conexión MCP en ChatGPT mediante la opción de refrescar herramientas
+   que ofrezca la cuenta y verificar en una conversación nueva. Si sigue mostrando
+   dos, revisar la conexión/catálogo de ChatGPT antes de cambiar el código otra vez.
+   No crear simultáneamente otra copia del mismo conector sin resolver la existente.
+6. Pedir `get_kairos_kucoin_ohlcv` de BTCUSDT, interval 1d, limit 90 y comprobar
+   status OK, continuidad y último cierre UTC. Un fallo upstream no se soluciona
+   repitiendo ni solicitando el snapshot completo.
 
-Cada vela conserva O/H/L/C/volumen/turnover y fechasUTC. Se ordenan, excluye el día abierto y se rechazan duplicados, OHLC inválido y huecos internos. Historia más corta desde el listado se declara mediante count, coverage_start_utc y coverage_complete; no se fabrican días previos. Una serie debe llegar hasta el último día cerrado.
+No se ha desplegado este paquete ni verificado upstream real en esta entrega.
 
-Caché SQLite por par, con rangos cubiertos: llamadas repetidas al mismo cierre no consultan exchange; al siguiente día se solicitan sólo días faltantes. Al ampliar una ventana puede requerirse una petición completa. Guardias418/429 comparten pausa con Spot y respetan Retry-After/reset. No hay reintentos automáticos. Las peticiones concurrentes de la misma vela comparten la descarga.
+## Herramientas expuestas por este código
 
-KUCOIN_GUARD_DB controla el archivo compartido de velas y pausas, default /tmp/kairos-kucoin-guard.sqlite3. Render Free puede perderlo al suspender/reiniciar/desplegar. Utilizar ruta de disco persistente sólo si ya está provisionado; este paquete no crea ni contrata discos. Conservar un worker para coordinación local.
+- get_kairos_kucoin_service_info: identidad y catálogo esperado; sin upstream.
+- get_kairos_kucoin_spot_prices(symbols=None): 12 pares USDT, observación original,
+  caché 60s y validación completa. No consulta históricos.
+- get_kairos_kucoin_ohlcv(symbol="BTCUSDT",interval="1d",limit=999): diarios cerrados
+  UTC, límite 1..1500, caché SQLite incremental. No devuelve semanas del proveedor.
+- get_kairos_kucoin_history_snapshot(): actualización conjunta explícita de las 12
+  series diarias e indicadores. No refresca Spot y falla sin publicar conjunto parcial.
 
-RSI14 Wilder, mediaRSI14, StochRSI14/14/3/3, EMA20/50/100/200. Si el listado es demasiado reciente para un indicador, queda N/D, sin sustituirlo con datos de Binance. HYPEUSDT es sólo valoración; el macro HYPE/USDC sigue en Hyperliquid.
+Las firmas y nombres se conservan. No se modifican cálculo, precios o reglas de
+históricos. HYPEUSDT sirve para valoración; macro HYPE/USDC sigue en Hyperliquid.
 
-22 pruebas aprobadas y discovery/protocolo MCP comprobado localmente con datos sintéticos para 12series. No se declara cobertura histórica en vivo: este entorno recibió respuestasREST no JSON; validar desde Render después de desplegar. Ver get_kairos_kucoin_history_snapshot: status OK,12series, fechas hasta último cierre UTC. Si falla, revisar failed_symbol/reason sin repetir durante una pausa.
+Caché: KUCOIN_GUARD_DB, default /tmp/kairos-kucoin-guard.sqlite3. Render Free puede
+perder ese archivo al reiniciar; no se provisionan discos. Un solo worker mantiene
+coordinación local. Guardias 418/429 y Retry-After compartidos, sin reintentos automáticos.
 
-API oficial: https://www.kucoin.com/docs-new/rest/spot-trading/market-data/get-klines
+Los consumidores deben convertir campos OHLC de texto a números finitos y adaptar
+interval 1d/1D según su contrato antes de usar el agente Estructura y Ciclo.
+
+## Validación local
+
+```bash
+python -m unittest discover -v
+```
+
+24 pruebas aprobadas: mercado, históricos, catálogo MCP exacto, esquema OHLCV,
+despacho de herramientas históricas con datos sintéticos y simulación de los
+archivos COPY de Docker. No se construyó una imagen Docker ni se verificó Render.

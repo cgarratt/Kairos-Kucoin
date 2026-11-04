@@ -3,13 +3,20 @@ import os
 from fastmcp import FastMCP
 from market_data import spot_prices
 from history_data import ohlcv, history_snapshot
+EXPECTED_TOOLS = (
+    'get_kairos_kucoin_service_info',
+    'get_kairos_kucoin_spot_prices',
+    'get_kairos_kucoin_ohlcv',
+    'get_kairos_kucoin_history_snapshot',
+)
 mcp=FastMCP('Kairos KuCoin Market Data')
 
 @mcp.tool()
 def get_kairos_kucoin_service_info() -> dict:
     """Local release identity and capabilities; no upstream API request."""
-    return {'service':'MCP_KuCoin','version':'1.1.0',
-            'release_suite':'2026.11.02.7','read_only':True,'data_scope':'Primary KuCoin Spot and closed daily history, separate from Binance'}
+    return {'service':'MCP_KuCoin','version':'1.1.1',
+            'release_suite':'2026.11.04.1','read_only':True,'expected_tool_count':len(EXPECTED_TOOLS),
+            'expected_tools':list(EXPECTED_TOOLS),'data_scope':'Primary KuCoin Spot and closed daily history, separate from Binance'}
 
 @mcp.tool()
 def get_kairos_kucoin_spot_prices(symbols: list[str] | None = None) -> dict:
